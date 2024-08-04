@@ -1,7 +1,47 @@
 ﻿@page "/"
+@inject IJSRuntime js
 
-<PageTitle>Home</PageTitle>
+<MudGrid Spacing="5" Class="pt-5">
+    <MudItem xs="12">
+        <MudPaper Elevation="1" Class="pa-16 mud-theme-info">Sou Secundário.</MudPaper>
+    </MudItem>
 
-<h1>Hello, world!</h1>
+    <MudItem xs="6">
+        <MudPaper
+            Elevation="1" 
+            Class="pa-16"
+            Style="@($"color: {Theme.PaletteLight.Dark}; background: {Theme.PaletteLight.Warning}")">
+            Mudando no Style
+        </MudPaper>
+    </MudItem>
 
-Welcome to your new app.
+    <MudFlexBreak/>
+
+    <MudItem xs="4">
+        <MudPaper Elevation="1" Class="pa-16 red shades-text text-white"> Olar </MudPaper>
+    </MudItem>
+
+    <MudItem xs="2">
+        <MudPaper Elevation="3" Class="pa-16"></MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private MudTheme Theme = new MudTheme();
+
+    static string StaticString = "Deu certo?";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await js.InvokeAsync<string>("log", "Estou chamando uma função js!");
+        StaticString = "Deu certo sim!";
+        await js.InvokeAsync<string>("callDotNetFunction", StaticString);
+    }
+
+    [JSInvokable]
+    public static string MethodCallFromJs(string value)
+    {
+        return value;
+    }
+
+}
